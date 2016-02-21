@@ -1,0 +1,59 @@
+## H2O server
+
+build from source
+
+## Usage
+
+create default conf
+```
+listen:
+  port: 8080
+user: nobody
+hosts:
+  "myhost.example.com":
+    paths:
+      /:
+        file.dir: /opt/h2o/public
+access-log: /dev/stdout
+error-log: /dev/stderr
+```
+
+run docker
+```
+docker run -p 8080:8080 -v /path/to/server-tests/h2o/h2o.conf:/opt/h2o/h2o.conf -v /path/to/server-tests/h2o/public:/opt/h2o/public -it h2o
+```
+
+check with curl
+```
+curl -I --http2 http://myhost.example.com:8080/
+
+HTTP/1.1 101 Switching Protocols
+Date: Sun, 21 Feb 2016 06:22:32 GMT
+Server: h2o/1.8.0-alpha1
+Connection: upgrade
+upgrade: h2c
+
+HTTP/2.0 200
+server:h2o/1.8.0-alpha1
+date:Sun, 21 Feb 2016 06:22:32 GMT
+content-type:text/html
+last-modified:Sun, 21 Feb 2016 06:03:40 GMT
+etag:"56c9533c-b"
+accept-ranges:bytes
+content-length:11
+```
+
+when your curl dont have http2 support.
+```
+brew reinstall curl --with-openssl --with-nghttp2
+brew link curl --force
+```
+
+restert terminal
+```
+curl -V
+
+curl 7.43.0 (x86_64-apple-darwin14.0) libcurl/7.43.0 SecureTransport zlib/1.2.5
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 pop3s rtsp smb smbs smtp smtps telnet tftp
+Features: AsynchDNS IPv6 Largefile GSS-API Kerberos SPNEGO NTLM NTLM_WB SSL libz UnixSockets
+```
